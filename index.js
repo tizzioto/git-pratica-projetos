@@ -39,9 +39,21 @@ app.post('/livros', (req, res) => {
   });
 });
 
-// Consultar livros cadastrados
+
+// Consultar e pesquisar livros
 app.get('/livros', (req, res) => {
-  res.json(livros);
+  const { busca } = req.query;
+
+  if (!busca) {
+    return res.json(livros);
+  }
+
+  const resultado = livros.filter(livro =>
+    livro.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+    livro.autor.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  res.json(resultado);
 });
 
 export default app;
