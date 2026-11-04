@@ -1,9 +1,12 @@
+
 import express from 'express';
 
 const app = express();
 
-app.get('/', (_, res) => {
-  res.send('Hello, Git!');
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: 'public' });
 });
 
 export default app;
