@@ -8,6 +8,7 @@ app.use(express.static('public'));
 
 // Lista temporária de livros
 let livros = [];
+let emprestimos = [];
 
 // Página inicial
 app.get('/', (req, res) => {
@@ -54,6 +55,48 @@ app.get('/livros', (req, res) => {
   );
 
   res.json(resultado);
+});
+
+// Registrar empréstimo
+app.post('/emprestimos', (req, res) => {
+  const { livroId, leitor } = req.body;
+
+  const livro = livros.find(l => l.id === Number(livroId));
+
+  if (!livro) {
+    return res.status(404).json({
+      mensagem: 'Livro não encontrado.'
+    });
+  }
+
+  if (!leitor) {
+    return res.status(400).json({
+      mensagem: 'Nome do leitor é obrigatório.'
+    });
+  }
+
+  if (!livro.disponivel) {
+    return res.status(400).json({
+      mensagem: 'Este livro já está emprestado.'
+    });
+  }
+
+  const novoEmprestimo = {
+    id: emprestimos.length + 1,
+    livroId: livro.id,
+    tituloLivro: livro.titulo,
+    leitor,
+    dataEmprestimo: new Date().toLocaleDateString('pt-BR'),
+    status: 'Ativo'
+  };
+
+  emprestimos.push(novoEmprestimo);
+  livro.disponivel = false;
+
+  res.status(201).json({
+    mensagem: 'Empréstimo registrado com sucesso!',
+    emprestimo: novoEmprestimo
+  });
 });
 
 export default app;
