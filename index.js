@@ -1,21 +1,58 @@
 import express from 'express';
 import Livro from './models/Livro.js';
 import Emprestimo from './models/Emprestimo.js';
+import Leitor from './models/Leitor.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.static('public'));
 
-// Lista temporária de livros
+// Listas temporárias de dados
 let livros = [];
 let emprestimos = [];
+let leitores = [];
 
 // Página inicial
 app.get('/', (req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
+// Cadastrar leitor
+app.post('/leitores', (req, res) => {
+  const { nome, cpf, email, telefone } = req.body;
 
+  if (!nome || !cpf || !email || !telefone) {
+    return res.status(400).json({
+      mensagem: 'Todos os campos são obrigatórios.'
+    });
+  }
+
+  const leitorExistente = leitores.find(
+    leitor => leitor.cpf === cpf
+  );
+
+  if (leitorExistente) {
+    return res.status(409).json({
+      mensagem: 'Já existe um leitor cadastrado com este CPF.'
+    });
+  }
+
+  const novoLeitor = new Leitor(
+    nome,
+    cpf,
+    email,
+    telefone
+  );
+
+  novoLeitor.id = leitores.length + 1;
+
+  leitores.push(novoLeitor);
+
+  res.status(201).json({
+    mensagem: 'Leitor cadastrado com sucesso!',
+    leitor: novoLeitor
+  });
+});
 
 app.post('/livros', (req, res) => {
   const {
