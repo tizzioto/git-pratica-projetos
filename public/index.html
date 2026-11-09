@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca | Sistema de Gestão</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f4f9;
+            color: #263449;
+        }
+
+        header {
+            background: #172b4d;
+            color: white;
+            padding: 25px 6%;
+        }
+
+        header h1 {
+            font-size: 25px;
+        }
+
+        header p {
+            margin-top: 7px;
+            color: #bdcce0;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #718096;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card, .panel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #172b4d0d;
+        }
+
+        .stat-card span {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .stat-card h3 {
+            font-size: 30px;
+            margin-top: 10px;
+            color: #172b4d;
+        }
+
+        .panel {
+            margin-bottom: 25px;
+        }
+
+        .panel h2 {
+            font-size: 19px;
+            margin-bottom: 20px;
+        }
+
+        .forms {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dce2eb;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3976c5;
+        }
+
+        button {
+            background: #2864a8;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #194d89;
+        }
+
+        .search {
+            max-width: 400px;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px;
+        }
+
+        .book {
+            border: 1px solid #e3e8ef;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .book h3 {
+            margin-bottom: 8px;
+            color: #172b4d;
+        }
+
+        .book p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .available {
+            background: #d9f5e5;
+            color: #167343;
+        }
+
+        .unavailable {
+            background: #ffe2e2;
+            color: #b42318;
+        }
+
+        .book button {
+            display: block;
+            width: 100%;
+        }
+
+        .message {
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            .stats, .forms {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>📚 Biblioteca Central</h1>
+    <p>Sistema de Gerenciamento de Biblioteca</p>
+</header>
+
+<main>
+
+    <section class="welcome">
+        <h2>Painel de Controle</h2>
+        <p>Gerencie livros, consultas e empréstimos em um só lugar.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <span>Total de livros</span>
+            <h3 id="totalLivros">0</h3>
+        </div>
+
+        <div class="stat-card">
+            <span>Livros disponíveis</span>
+            <h3 id="disponiveis">0</h3>
+        </div>
+
+        <div class="stat-card">
+            <span>Livros emprestados</span>
+            <h3 id="emprestados">0</h3>
+        </div>
+    </section>
+
+    <section class="forms">
+
+        <div class="panel">
+            <h2>➕ Cadastrar livro</h2>
+
+            <form id="formLivro">
+                <label>Título do livro</label>
+                <input type="text" id="titulo" required placeholder="Digite o título">
+
+                <label>Autor</label>
+                <input type="text" id="autor" required placeholder="Digite o autor">
+
+                <button type="submit">Cadastrar livro</button>
+            </form>
+
+            <p class="message" id="mensagemLivro"></p>
+        </div>
+
+        <div class="panel">
+            <h2>📖 Registrar empréstimo</h2>
+
+            <form id="formEmprestimo">
+                <label>ID do livro</label>
+                <input type="number" id="livroId" required placeholder="Ex: 1" min="1">
+
+                <label>Nome do leitor</label>
+                <input type="text" id="leitor" required placeholder="Nome do leitor">
+
+                <button type="submit">Registrar empréstimo</button>
+            </form>
+
+            <p class="message" id="mensagemEmprestimo"></p>
+        </div>
+
+    </section>
+
+    <section class="panel">
+        <h2>📚 Acervo de livros</h2>
+
+        <input
+            type="text"
+            id="busca"
+            class="search"
+            placeholder="Pesquisar por título ou autor..."
+        >
+
+        <div class="book-list" id="listaLivros">
+            <p>Carregando livros...</p>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    const listaLivros = document.getElementById('listaLivros');
+    const busca = document.getElementById('busca');
+
+    async function carregarLivros() {
+        try {
+            const resposta = await fetch('/livros');
+            const livros = await resposta.json();
+
+            document.getElementById('totalLivros').textContent = livros.length;
+            document.getElementById('disponiveis').textContent =
+                livros.filter(livro => livro.disponivel).length;
+            document.getElementById('emprestados').textContent =
+                livros.filter(livro => !livro.disponivel).length;
+
+            renderizarLivros(livros);
+        } catch (erro) {
+            listaLivros.textContent = 'Erro ao carregar os livros.';
+        }
+    }
+
+    function renderizarLivros(livros) {
+        listaLivros.innerHTML = '';
+
+        if (livros.length === 0) {
+            listaLivros.textContent = 'Nenhum livro encontrado.';
+            return;
+        }
+
+        livros.forEach(livro => {
+            const card = document.createElement('div');
+            card.className = 'book';
+
+            const titulo = document.createElement('h3');
+            titulo.textContent = livro.titulo;
+
+            const autor = document.createElement('p');
+            autor.textContent = 'Autor: ' + livro.autor;
+
+            const id = document.createElement('p');
+            id.textContent = 'Código: ' + livro.id;
+
+            const status = document.createElement('span');
+            status.className = 'status ' +
+                (livro.disponivel ? 'available' : 'unavailable');
+            status.textContent = livro.disponivel
+                ? 'Disponível'
+                : 'Emprestado';
+
+            card.append(titulo, autor, id, status);
+            listaLivros.appendChild(card);
+        });
+    }
+
+    document.getElementById('formLivro').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const titulo = document.getElementById('titulo').value;
+        const autor = document.getElementById('autor').value;
+
+        const resposta = await fetch('/livros', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ titulo, autor })
+        });
+
+        const resultado = await resposta.json();
+
+        document.getElementById('mensagemLivro').textContent =
+            resultado.mensagem;
+
+        if (resposta.ok) {
+            e.target.reset();
+            carregarLivros();
+        }
+    });
+
+    document.getElementById('formEmprestimo').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const livroId = document.getElementById('livroId').value;
+        const leitor = document.getElementById('leitor').value;
+
+        const resposta = await fetch('/emprestimos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ livroId, leitor })
+        });
+
+        const resultado = await resposta.json();
+
+        document.getElementById('mensagemEmprestimo').textContent =
+            resultado.mensagem;
+
+        if (resposta.ok) {
+            e.target.reset();
+            carregarLivros();
+        }
+    });
+
+    busca.addEventListener('input', async () => {
+        const resposta = await fetch(
+            '/livros?busca=' + encodeURIComponent(busca.value)
+        );
+
+        const livros = await resposta.json();
+        renderizarLivros(livros);
+    });
+
+    carregarLivros();
+</script>
+
+</body>
+</html>
