@@ -99,4 +99,44 @@ app.post('/emprestimos', (req, res) => {
   });
 });
 
+// Consultar todos os empréstimos
+app.get('/emprestimos', (req, res) => {
+  res.json(emprestimos);
+});
+
+// Registrar devolução
+app.post('/devolucoes/:emprestimoId', (req, res) => {
+  const emprestimoId = Number(req.params.emprestimoId);
+
+  const emprestimo = emprestimos.find(
+    e => e.id === emprestimoId
+  );
+
+  if (!emprestimo) {
+    return res.status(404).json({
+      mensagem: 'Empréstimo não encontrado.'
+    });
+  }
+
+  if (emprestimo.status === 'Devolvido') {
+    return res.status(400).json({
+      mensagem: 'Este livro já foi devolvido.'
+    });
+  }
+
+  const livro = livros.find(
+    l => l.id === emprestimo.livroId
+  );
+
+  emprestimo.status = 'Devolvido';
+  emprestimo.dataDevolucao = new Date().toLocaleDateString('pt-BR');
+
+  livro.disponivel = true;
+
+  res.json({
+    mensagem: 'Devolução registrada com sucesso!',
+    emprestimo
+  });
+});
+
 export default app;
