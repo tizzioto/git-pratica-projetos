@@ -1,5 +1,6 @@
-
 import express from 'express';
+import Livro from './models/Livro.js';
+import Emprestimo from './models/Emprestimo.js';
 
 const app = express();
 
@@ -15,9 +16,17 @@ app.get('/', (req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
 
-// Cadastrar livro
+
 app.post('/livros', (req, res) => {
-  const { titulo, autor } = req.body;
+  const {
+    titulo,
+    autor,
+    isbn,
+    editora,
+    anoPublicacao,
+    categoria,
+    quantidadeDisponivel
+  } = req.body;
 
   if (!titulo || !autor) {
     return res.status(400).json({
@@ -25,12 +34,17 @@ app.post('/livros', (req, res) => {
     });
   }
 
-  const novoLivro = {
-    id: livros.length + 1,
+  const novoLivro = new Livro(
     titulo,
     autor,
-    disponivel: true
-  };
+    isbn,
+    editora,
+    anoPublicacao,
+    categoria,
+    quantidadeDisponivel ?? 1
+  );
+
+  novoLivro.id = livros.length + 1;
 
   livros.push(novoLivro);
 
@@ -40,16 +54,19 @@ app.post('/livros', (req, res) => {
   });
 });
 
-
 // Consultar e pesquisar livros
 app.get('/livros', (req, res) => {
   const { busca } = req.query;
 
-  if (!busca) {
-    return res.json(livros);
-  }
+  const livrosComDisponibilidade = livros.map(livro => ({
+    ...livro,
+    disponivel: livro.estaDisponivel()
+  }));
 
-  const resultado = livros.filter(livro =>
+  if (!busca) {
+    return res.json(livrosComDisponibilidade);
+  }
+  const resultado = livrosComDisponibilidade.filter(livro =>
     livro.titulo.toLowerCase().includes(busca.toLowerCase()) ||
     livro.autor.toLowerCase().includes(busca.toLowerCase())
   );
@@ -57,7 +74,7 @@ app.get('/livros', (req, res) => {
   res.json(resultado);
 });
 
-// Registrar empréstimo
+
 app.post('/emprestimos', (req, res) => {
   const { livroId, leitor } = req.body;
 
@@ -75,23 +92,23 @@ app.post('/emprestimos', (req, res) => {
     });
   }
 
-  if (!livro.disponivel) {
+  if (!livro.estaDisponivel()) {
     return res.status(400).json({
-      mensagem: 'Este livro já está emprestado.'
+      mensagem: 'Este livro está indisponível.'
     });
   }
 
-  const novoEmprestimo = {
-    id: emprestimos.length + 1,
-    livroId: livro.id,
-    tituloLivro: livro.titulo,
+  livro.baixarExemplar();
+
+  const novoEmprestimo = new Emprestimo(
+    emprestimos.length + 1,
+    null,
     leitor,
-    dataEmprestimo: new Date().toLocaleDateString('pt-BR'),
-    status: 'Ativo'
-  };
+    livro.id,
+    livro.titulo
+  );
 
   emprestimos.push(novoEmprestimo);
-  livro.disponivel = false;
 
   res.status(201).json({
     mensagem: 'Empréstimo registrado com sucesso!',
@@ -128,10 +145,14 @@ app.post('/devolucoes/:emprestimoId', (req, res) => {
     l => l.id === emprestimo.livroId
   );
 
-  emprestimo.status = 'Devolvido';
-  emprestimo.dataDevolucao = new Date().toLocaleDateString('pt-BR');
+  if (!livro) {
+    return res.status(404).json({
+      mensagem: 'Livro associado ao empréstimo não encontrado.'
+    });
+  }
 
-  livro.disponivel = true;
+  emprestimo.registrarDevolucao();
+  livro.devolverExemplar();
 
   res.json({
     mensagem: 'Devolução registrada com sucesso!',
