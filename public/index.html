@@ -256,7 +256,16 @@
         </div>
 
     </section>
+    <!-- Histórico de empréstimos -->
+    <section class="panel">
+        <h2>📋 Histórico de empréstimos</h2>
 
+        <div id="listaEmprestimos">
+            <p>Carregando empréstimos...</p>
+        </div>
+    </section>
+
+    <!-- Acervo de livros -->
     <section class="panel">
         <h2>📚 Acervo de livros</h2>
 
@@ -292,6 +301,85 @@
             renderizarLivros(livros);
         } catch (erro) {
             listaLivros.textContent = 'Erro ao carregar os livros.';
+        }
+    }
+
+        async function carregarEmprestimos() {
+        const lista = document.getElementById('listaEmprestimos');
+
+        try {
+            const resposta = await fetch('/emprestimos');
+            const emprestimos = await resposta.json();
+
+            lista.innerHTML = '';
+
+            if (emprestimos.length === 0) {
+                lista.textContent = 'Nenhum empréstimo registrado.';
+                return;
+            }
+
+            emprestimos.forEach(emprestimo => {
+                const card = document.createElement('div');
+                card.className = 'book';
+
+                const titulo = document.createElement('h3');
+                titulo.textContent = emprestimo.tituloLivro;
+
+                const leitor = document.createElement('p');
+                leitor.textContent = 'Leitor: ' + emprestimo.leitor;
+
+                const data = document.createElement('p');
+                data.textContent = 'Data do empréstimo: ' + emprestimo.dataEmprestimo;
+
+                const status = document.createElement('span');
+                status.className = 'status ' +
+                    (emprestimo.status === 'Ativo' ? 'unavailable' : 'available');
+                status.textContent = emprestimo.status;
+
+                card.append(titulo, leitor, data, status);
+
+                if (emprestimo.status === 'Ativo') {
+                    const botao = document.createElement('button');
+                    botao.textContent = 'Registrar devolução';
+
+                    botao.addEventListener('click', async () => {
+                        botao.disabled = true;
+                        botao.textContent = 'Registrando...';
+
+                        try {
+                            const resposta = await fetch(
+                                `/devolucoes/${emprestimo.id}`,
+                                { method: 'POST' }
+                            );
+
+                            const resultado = await resposta.json();
+
+                            if (!resposta.ok) {
+                                alert(resultado.mensagem);
+                                botao.disabled = false;
+                                botao.textContent = 'Registrar devolução';
+                                return;
+                            }
+
+                            alert(resultado.mensagem);
+                            carregarEmprestimos();
+                            carregarLivros();
+
+                        } catch (erro) {
+                            alert('Erro ao registrar devolução.');
+                            botao.disabled = false;
+                            botao.textContent = 'Registrar devolução';
+                        }
+                    });
+
+                    card.appendChild(botao);
+                }
+
+                lista.appendChild(card);
+            });
+
+        } catch (erro) {
+            lista.textContent = 'Erro ao carregar os empréstimos.';
         }
     }
 
@@ -348,6 +436,7 @@
         if (resposta.ok) {
             e.target.reset();
             carregarLivros();
+            carregarEmprestimos();
         }
     });
 
@@ -371,6 +460,7 @@
         if (resposta.ok) {
             e.target.reset();
             carregarLivros();
+            carregarEmprestimos();
         }
     });
 
@@ -384,6 +474,7 @@
     });
 
     carregarLivros();
+    carregarEmprestimos();
 </script>
 
 </body>
