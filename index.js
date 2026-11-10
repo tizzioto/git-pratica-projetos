@@ -5,6 +5,7 @@ import livrosRoutes from './routes/livros.js';
 import leitoresRoutes from './routes/leitores.js';
 import emprestimosRoutes from './routes/emprestimos.js';
 import devolucoesRoutes from './routes/devolucoes.js';
+import funcionariosRoutes from './routes/funcionarios.js';
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use('/livros', livrosRoutes);
 app.use('/leitores', leitoresRoutes);
 app.use('/emprestimos', emprestimosRoutes);
 app.use('/devolucoes', devolucoesRoutes);
+app.use('/funcionarios', funcionariosRoutes);
 
 export default app;
