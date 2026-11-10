@@ -113,7 +113,7 @@ app.get('/livros', (req, res) => {
 
 
 app.post('/emprestimos', (req, res) => {
-  const { livroId, leitor } = req.body;
+  const { livroId, leitorCpf } = req.body;
 
   const livro = livros.find(l => l.id === Number(livroId));
 
@@ -123,9 +123,17 @@ app.post('/emprestimos', (req, res) => {
     });
   }
 
+  const leitor = leitores.find(l => l.cpf === leitorCpf);
+
   if (!leitor) {
+    return res.status(404).json({
+      mensagem: 'Leitor não encontrado. Cadastre o leitor primeiro.'
+    });
+  }
+
+  if (!leitor.podeEmprestar()) {
     return res.status(400).json({
-      mensagem: 'Nome do leitor é obrigatório.'
+      mensagem: 'O leitor já atingiu o limite de 3 empréstimos ativos.'
     });
   }
 
@@ -139,13 +147,14 @@ app.post('/emprestimos', (req, res) => {
 
   const novoEmprestimo = new Emprestimo(
     emprestimos.length + 1,
-    null,
-    leitor,
+    leitor.id,
+    leitor.nome,
     livro.id,
     livro.titulo
   );
 
   emprestimos.push(novoEmprestimo);
+  leitor.emprestimos.push(novoEmprestimo);
 
   res.status(201).json({
     mensagem: 'Empréstimo registrado com sucesso!',
