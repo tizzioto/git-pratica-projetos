@@ -102,38 +102,78 @@
     }
 }   
 
-    function renderizarLivros(livros) {
-        listaLivros.innerHTML = '';
 
-        if (livros.length === 0) {
-            listaLivros.textContent = 'Nenhum livro encontrado.';
-            return;
-        }
+function renderizarLivros(livros) {
+    listaLivros.innerHTML = '';
 
-        livros.forEach(livro => {
-            const card = document.createElement('div');
-            card.className = 'book';
-
-            const titulo = document.createElement('h3');
-            titulo.textContent = livro.titulo;
-
-            const autor = document.createElement('p');
-            autor.textContent = 'Autor: ' + livro.autor;
-
-            const id = document.createElement('p');
-            id.textContent = 'Código: ' + livro.id;
-
-            const status = document.createElement('span');
-            status.className = 'status ' +
-                (livro.disponivel ? 'available' : 'unavailable');
-            status.textContent = livro.disponivel
-                ? 'Disponível'
-                : 'Emprestado';
-
-            card.append(titulo, autor, id, status);
-            listaLivros.appendChild(card);
-        });
+    if (livros.length === 0) {
+        listaLivros.textContent = 'Nenhum livro encontrado.';
+        return;
     }
+
+    livros.forEach(livro => {
+        const card = document.createElement('div');
+        card.className = 'book';
+
+        const titulo = document.createElement('h3');
+        titulo.textContent = livro.titulo;
+
+        const autor = document.createElement('p');
+        autor.textContent = 'Autor: ' + livro.autor;
+
+        const id = document.createElement('p');
+        id.textContent = 'Código: ' + livro.id;
+
+        const status = document.createElement('span');
+        status.className = 'status ' +
+            (livro.disponivel ? 'available' : 'unavailable');
+        status.textContent = livro.disponivel
+            ? 'Disponível'
+            : 'Emprestado';
+
+        const botaoEditar = document.createElement('button');
+        botaoEditar.textContent = 'Editar';
+
+        botaoEditar.addEventListener('click', async () => {
+            const novoTitulo = prompt('Novo título:', livro.titulo);
+
+            if (novoTitulo === null) return;
+
+            const novoAutor = prompt('Novo autor:', livro.autor);
+
+            if (novoAutor === null) return;
+
+            if (!novoTitulo.trim() || !novoAutor.trim()) {
+                alert('Título e autor são obrigatórios.');
+                return;
+            }
+
+            try {
+                const resposta = await fetch(`/livros/${livro.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        titulo: novoTitulo.trim(),
+                        autor: novoAutor.trim()
+                    })
+                });
+
+                const resultado = await resposta.json();
+                alert(resultado.mensagem);
+
+                if (resposta.ok) {
+                    carregarLivros();
+                }
+            } catch (erro) {
+                alert('Erro ao atualizar o livro.');
+            }
+        });
+
+        card.append(titulo, autor, id, status, botaoEditar);
+        listaLivros.appendChild(card);
+    });
+}
+
 
     document.getElementById('formLivro').addEventListener('submit', async (e) => {
         e.preventDefault();
