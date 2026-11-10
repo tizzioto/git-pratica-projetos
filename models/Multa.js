@@ -13,8 +13,14 @@ export default class Multa {
   }
 
   calcularDiasAtraso(dataPrevista, dataDevolucao) {
-    const diferenca = dataDevolucao - dataPrevista;
-    const dias = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+    const prevista = new Date(dataPrevista);
+    const devolucao = new Date(dataDevolucao);
+
+    prevista.setUTCHours(0, 0, 0, 0);
+    devolucao.setUTCHours(0, 0, 0, 0);
+
+    const diferenca = devolucao - prevista;
+    const dias = diferenca / (1000 * 60 * 60 * 24);
 
     return Math.max(0, dias);
   }
