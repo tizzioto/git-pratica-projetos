@@ -102,6 +102,48 @@
     }
 }   
 
+async function carregarAtrasados() {
+    const lista = document.getElementById('listaAtrasados');
+
+    try {
+        const resposta = await fetch('/emprestimos/atrasados');
+        const emprestimos = await resposta.json();
+
+        lista.innerHTML = '';
+
+        if (emprestimos.length === 0) {
+            lista.textContent = 'Nenhum livro em atraso.';
+            return;
+        }
+
+        emprestimos.forEach(emprestimo => {
+            const card = document.createElement('div');
+            card.className = 'book';
+
+            const titulo = document.createElement('h3');
+            titulo.textContent = emprestimo.tituloLivro;
+
+            const leitor = document.createElement('p');
+            leitor.textContent = 'Leitor: ' + emprestimo.leitorNome;
+
+            const data = document.createElement('p');
+            data.textContent = 'Data prevista para devolução: ' +
+                new Date(emprestimo.dataPrevistaDevolucao)
+                    .toLocaleDateString('pt-BR');
+
+            const status = document.createElement('span');
+            status.className = 'status unavailable';
+            status.textContent = 'Atrasado';
+
+            card.append(titulo, leitor, data, status);
+            lista.appendChild(card);
+        });
+
+    } catch (erro) {
+        lista.textContent = 'Erro ao carregar livros em atraso.';
+    }
+}
+
 
 function renderizarLivros(livros) {
     listaLivros.innerHTML = '';
@@ -257,3 +299,4 @@ function renderizarLivros(livros) {
 
     carregarLivros();
     carregarEmprestimos();
+    carregarAtrasados();

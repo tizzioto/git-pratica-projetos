@@ -59,5 +59,13 @@ router.post('/', (req, res) => {
 router.get('/', (req, res) => {
   res.json(emprestimos);
 });
+// Identificar livros em atraso
+router.get('/atrasados', (req, res) => {
+  const emprestimosAtrasados = emprestimos.filter(
+    emprestimo => emprestimo.estaAtrasado()
+  );
+
+  res.json(emprestimosAtrasados);
+});
 
 export default router;
