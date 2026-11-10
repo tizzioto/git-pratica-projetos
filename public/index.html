@@ -6,188 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca | Sistema de Gestão</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #f1f4f9;
-            color: #263449;
-        }
-
-        header {
-            background: #172b4d;
-            color: white;
-            padding: 25px 6%;
-        }
-
-        header h1 {
-            font-size: 25px;
-        }
-
-        header p {
-            margin-top: 7px;
-            color: #bdcce0;
-        }
-
-        main {
-            max-width: 1150px;
-            margin: 35px auto;
-            padding: 0 20px;
-        }
-
-        .welcome {
-            margin-bottom: 25px;
-        }
-
-        .welcome h2 {
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
-
-        .welcome p {
-            color: #718096;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card, .panel {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px #172b4d0d;
-        }
-
-        .stat-card span {
-            color: #718096;
-            font-size: 14px;
-        }
-
-        .stat-card h3 {
-            font-size: 30px;
-            margin-top: 10px;
-            color: #172b4d;
-        }
-
-        .panel {
-            margin-bottom: 25px;
-        }
-
-        .panel h2 {
-            font-size: 19px;
-            margin-bottom: 20px;
-        }
-
-        .forms {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #dce2eb;
-            border-radius: 7px;
-            margin-bottom: 15px;
-            outline: none;
-        }
-
-        input:focus {
-            border-color: #3976c5;
-        }
-
-        button {
-            background: #2864a8;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #194d89;
-        }
-
-        .search {
-            max-width: 400px;
-        }
-
-        .book-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 15px;
-        }
-
-        .book {
-            border: 1px solid #e3e8ef;
-            padding: 18px;
-            border-radius: 10px;
-        }
-
-        .book h3 {
-            margin-bottom: 8px;
-            color: #172b4d;
-        }
-
-        .book p {
-            color: #718096;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-bottom: 12px;
-        }
-
-        .available {
-            background: #d9f5e5;
-            color: #167343;
-        }
-
-        .unavailable {
-            background: #ffe2e2;
-            color: #b42318;
-        }
-
-        .book button {
-            display: block;
-            width: 100%;
-        }
-
-        .message {
-            margin-top: 12px;
-            font-size: 14px;
-        }
-
-        @media (max-width: 700px) {
-            .stats, .forms {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -198,69 +17,94 @@
 </header>
 
 <main>
-
     <section class="welcome">
-        <h2>Painel de Controle</h2>
-        <p>Gerencie livros, consultas e empréstimos em um só lugar.</p>
-    </section>
+    <h2>Painel de Controle</h2>
+    <p>Gerencie livros, consultas e empréstimos em um só lugar.</p>
+</section>
 
-    <section class="stats">
-        <div class="stat-card">
-            <span>Total de livros</span>
-            <h3 id="totalLivros">0</h3>
-        </div>
+<section class="stats">
+    <div class="stat-card">
+        <span>Total de livros</span>
+        <h3 id="totalLivros">0</h3>
+    </div>
 
-        <div class="stat-card">
-            <span>Livros disponíveis</span>
-            <h3 id="disponiveis">0</h3>
-        </div>
+    <div class="stat-card">
+        <span>Livros disponíveis</span>
+        <h3 id="disponiveis">0</h3>
+    </div>
 
-        <div class="stat-card">
-            <span>Livros emprestados</span>
-            <h3 id="emprestados">0</h3>
-        </div>
-    </section>
+    <div class="stat-card">
+        <span>Livros emprestados</span>
+        <h3 id="emprestados">0</h3>
+    </div>
+</section>
 
-    <section class="forms">
+<section class="forms">
 
-        <div class="panel">
-            <h2>➕ Cadastrar livro</h2>
+    <!-- Cadastro de livro -->
+    <div class="panel">
+        <h2>➕ Cadastrar livro</h2>
 
-            <form id="formLivro">
-                <label>Título do livro</label>
-                <input type="text" id="titulo" required placeholder="Digite o título">
+        <form id="formLivro">
+            <label>Título do livro</label>
+            <input type="text" id="titulo" required placeholder="Digite o título">
 
-                <label>Autor</label>
-                <input type="text" id="autor" required placeholder="Digite o autor">
+            <label>Autor</label>
+            <input type="text" id="autor" required placeholder="Digite o autor">
 
-                <button type="submit">Cadastrar livro</button>
-            </form>
+            <button type="submit">Cadastrar livro</button>
+        </form>
 
-            <p class="message" id="mensagemLivro"></p>
-        </div>
+        <p class="message" id="mensagemLivro"></p>
+    </div>
 
-        <div class="panel">
-            <h2>📖 Registrar empréstimo</h2>
+    <!-- Cadastro de leitor -->
+    <div class="panel">
+        <h2>👤 Cadastrar leitor</h2>
 
-            <form id="formEmprestimo">
-                <label>ID do livro</label>
-                <input type="number" id="livroId" required placeholder="Ex: 1" min="1">
+        <form id="formLeitor">
+            <label>Nome completo</label>
+            <input type="text" id="nomeLeitor" required placeholder="Digite o nome">
 
-                <label>Nome do leitor</label>
-                <input type="text" id="leitor" required placeholder="Nome do leitor">
+            <label>CPF</label>
+            <input type="text" id="cpfLeitor" required placeholder="Digite o CPF">
 
-                <button type="submit">Registrar empréstimo</button>
-            </form>
+            <label>E-mail</label>
+            <input type="email" id="emailLeitor" required placeholder="Digite o e-mail">
 
-            <p class="message" id="mensagemEmprestimo"></p>
-        </div>
+            <label>Telefone</label>
+            <input type="text" id="telefoneLeitor" required placeholder="Digite o telefone">
 
-    </section>
+            <button type="submit">Cadastrar leitor</button>
+        </form>
+
+        <p class="message" id="mensagemLeitor"></p>
+    </div>
+
+    <!-- Registro de empréstimo -->
+    <div class="panel">
+        <h2>📖 Registrar empréstimo</h2>
+
+        <form id="formEmprestimo">
+            <label>ID do livro</label>
+            <input type="number" id="livroId" required placeholder="Ex: 1" min="1">
+
+            <label>CPF do leitor</label>
+            <input type="text" id="leitorCpf" required placeholder="Digite o CPF cadastrado">
+
+            <button type="submit">Registrar empréstimo</button>
+        </form>
+
+        <p class="message" id="mensagemEmprestimo"></p>
+    </div>
+
+</section>
+
     <!-- Histórico de empréstimos -->
     <section class="panel">
         <h2>📋 Histórico de empréstimos</h2>
 
-        <div id="listaEmprestimos">
+         <div id="listaEmprestimos">
             <p>Carregando empréstimos...</p>
         </div>
     </section>
@@ -305,83 +149,87 @@
     }
 
         async function carregarEmprestimos() {
-        const lista = document.getElementById('listaEmprestimos');
+    const lista = document.getElementById('listaEmprestimos');
 
-        try {
-            const resposta = await fetch('/emprestimos');
-            const emprestimos = await resposta.json();
+    try {
+        const resposta = await fetch('/emprestimos');
+        const emprestimos = await resposta.json();
 
-            lista.innerHTML = '';
+        lista.innerHTML = '';
 
-            if (emprestimos.length === 0) {
-                lista.textContent = 'Nenhum empréstimo registrado.';
-                return;
-            }
+        if (emprestimos.length === 0) {
+            lista.textContent = 'Nenhum empréstimo registrado.';
+            return;
+        }
 
-            emprestimos.forEach(emprestimo => {
-                const card = document.createElement('div');
-                card.className = 'book';
+        emprestimos.forEach(emprestimo => {
+            const card = document.createElement('div');
+            card.className = 'book';
 
-                const titulo = document.createElement('h3');
-                titulo.textContent = emprestimo.tituloLivro;
+            const titulo = document.createElement('h3');
+            titulo.textContent = emprestimo.tituloLivro;
 
-                const leitor = document.createElement('p');
-                leitor.textContent = 'Leitor: ' + emprestimo.leitor;
+            const leitor = document.createElement('p');
+            leitor.textContent = 'Leitor: ' + emprestimo.leitorNome;
 
-                const data = document.createElement('p');
-                data.textContent = 'Data do empréstimo: ' + emprestimo.dataEmprestimo;
+            const data = document.createElement('p');
+            const dataFormatada = new Date(
+                emprestimo.dataEmprestimo
+            ).toLocaleDateString('pt-BR');
 
-                const status = document.createElement('span');
-                status.className = 'status ' +
-                    (emprestimo.status === 'Ativo' ? 'unavailable' : 'available');
-                status.textContent = emprestimo.status;
+            data.textContent = 'Data do empréstimo: ' + dataFormatada;
 
-                card.append(titulo, leitor, data, status);
+            const status = document.createElement('span');
+            status.className = 'status ' +
+                (emprestimo.status === 'Ativo' ? 'unavailable' : 'available');
+            status.textContent = emprestimo.status;
 
-                if (emprestimo.status === 'Ativo') {
-                    const botao = document.createElement('button');
-                    botao.textContent = 'Registrar devolução';
+            card.append(titulo, leitor, data, status);
 
-                    botao.addEventListener('click', async () => {
-                        botao.disabled = true;
-                        botao.textContent = 'Registrando...';
+            if (emprestimo.status === 'Ativo') {
+                const botao = document.createElement('button');
+                botao.textContent = 'Registrar devolução';
 
-                        try {
-                            const resposta = await fetch(
-                                `/devolucoes/${emprestimo.id}`,
-                                { method: 'POST' }
-                            );
+                botao.addEventListener('click', async () => {
+                    botao.disabled = true;
+                    botao.textContent = 'Registrando...';
 
-                            const resultado = await resposta.json();
+                    try {
+                        const resposta = await fetch(
+                            `/devolucoes/${emprestimo.id}`,
+                            { method: 'POST' }
+                        );
 
-                            if (!resposta.ok) {
-                                alert(resultado.mensagem);
-                                botao.disabled = false;
-                                botao.textContent = 'Registrar devolução';
-                                return;
-                            }
+                        const resultado = await resposta.json();
 
+                        if (!resposta.ok) {
                             alert(resultado.mensagem);
-                            carregarEmprestimos();
-                            carregarLivros();
-
-                        } catch (erro) {
-                            alert('Erro ao registrar devolução.');
                             botao.disabled = false;
                             botao.textContent = 'Registrar devolução';
+                            return;
                         }
-                    });
 
-                    card.appendChild(botao);
-                }
+                        alert(resultado.mensagem);
+                        carregarEmprestimos();
+                        carregarLivros();
 
-                lista.appendChild(card);
-            });
+                    } catch (erro) {
+                        alert('Erro ao registrar devolução.');
+                        botao.disabled = false;
+                        botao.textContent = 'Registrar devolução';
+                    }
+                });
 
-        } catch (erro) {
-            lista.textContent = 'Erro ao carregar os empréstimos.';
-        }
+                card.appendChild(botao);
+            }
+
+            lista.appendChild(card);
+        });
+
+    } catch (erro) {
+        lista.textContent = 'Erro ao carregar os empréstimos.';
     }
+}   
 
     function renderizarLivros(livros) {
         listaLivros.innerHTML = '';
@@ -439,17 +287,40 @@
             carregarEmprestimos();
         }
     });
+        // CADASTRO DE LEITOR 
+    document.getElementById('formLeitor').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
+        const nome = document.getElementById('nomeLeitor').value;
+        const cpf = document.getElementById('cpfLeitor').value;
+        const email = document.getElementById('emailLeitor').value;
+        const telefone = document.getElementById('telefoneLeitor').value;
+
+        const resposta = await fetch('/leitores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, cpf, email, telefone })
+        });
+
+        const resultado = await resposta.json();
+
+        document.getElementById('mensagemLeitor').textContent =
+            resultado.mensagem;
+
+        if (resposta.ok) {
+            e.target.reset();
+        }
+    });
+    // REGISTRO DE EMPRÉSTIMO
     document.getElementById('formEmprestimo').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const livroId = document.getElementById('livroId').value;
-        const leitor = document.getElementById('leitor').value;
-
+        const leitorCpf = document.getElementById('leitorCpf').value;
         const resposta = await fetch('/emprestimos', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ livroId, leitor })
+            body: JSON.stringify({ livroId, leitorCpf })
         });
 
         const resultado = await resposta.json();
