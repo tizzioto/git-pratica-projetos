@@ -19,7 +19,8 @@
         }
     }
 
-        async function carregarEmprestimos() {
+
+async function carregarEmprestimos() {
     const lista = document.getElementById('listaEmprestimos');
 
     try {
@@ -56,6 +57,19 @@
             status.textContent = emprestimo.status;
 
             card.append(titulo, leitor, data, status);
+
+            // Exibir multa após a devolução
+            if (emprestimo.status === 'Devolvido' && emprestimo.multa) {
+                const multa = document.createElement('p');
+
+                multa.textContent = 'Multa por atraso: ' +
+                    emprestimo.multa.valor.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+
+                card.appendChild(multa);
+            }
 
             if (emprestimo.status === 'Ativo') {
                 const botao = document.createElement('button');
@@ -97,11 +111,10 @@
             lista.appendChild(card);
         });
 
-    } catch (erro) {
-        lista.textContent = 'Erro ao carregar os empréstimos.';
-    }
-}   
-
+} catch (erro) {
+    lista.textContent = 'Erro ao carregar os empréstimos.';
+}
+}
 async function carregarAtrasados() {
     const lista = document.getElementById('listaAtrasados');
 
