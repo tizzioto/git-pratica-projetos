@@ -1,6 +1,7 @@
 
 import express from 'express';
 import { livros, emprestimos } from '../data/store.js';
+import Multa from '../models/Multa.js';
 
 const router = express.Router();
 
@@ -37,9 +38,14 @@ router.post('/:emprestimoId', (req, res) => {
   emprestimo.registrarDevolucao();
   livro.devolverExemplar();
 
+  // Calcular multa pela devolução em atraso
+  const multa = new Multa(emprestimo);
+  emprestimo.multa = multa;
+
   res.json({
     mensagem: 'Devolução registrada com sucesso!',
-    emprestimo
+    emprestimo,
+    multa
   });
 });
 
