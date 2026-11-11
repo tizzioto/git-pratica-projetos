@@ -313,3 +313,65 @@ function renderizarLivros(livros) {
     carregarLivros();
     carregarEmprestimos();
     carregarAtrasados();
+
+    // CADASTRO DE FUNCIONÁRIO
+document.getElementById('formFuncionario').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById('nomeFuncionario').value;
+    const cpf = document.getElementById('cpfFuncionario').value;
+    const email = document.getElementById('emailFuncionario').value;
+    const telefone = document.getElementById('telefoneFuncionario').value;
+    const cargo = document.getElementById('cargoFuncionario').value;
+    const senha = document.getElementById('senhaFuncionario').value;
+
+    const resposta = await fetch('/funcionarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, cpf, email, telefone, cargo, senha })
+    });
+
+    const resultado = await resposta.json();
+
+    document.getElementById('mensagemFuncionario').textContent =
+        resultado.mensagem;
+
+    if (resposta.ok) {
+        e.target.reset();
+    }
+});
+
+// LOGIN DE FUNCIONÁRIO
+
+// LOGIN DE FUNCIONÁRIO
+document.getElementById('formLogin').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const cpf = document.getElementById('cpfLogin').value;
+    const senha = document.getElementById('senhaLogin').value;
+
+    try {
+        const resposta = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cpf, senha })
+        });
+
+        const resultado = await resposta.json();
+
+        document.getElementById('mensagemLogin').textContent =
+            resultado.mensagem;
+
+        if (resposta.ok) {
+            document.getElementById('formLogin')
+                .closest('section').style.display = 'none';
+
+            document.getElementById('painelBiblioteca').style.display = 'block';
+        }
+
+    } catch (erro) {
+        document.getElementById('mensagemLogin').textContent =
+            'Erro ao realizar login.';
+    }
+});
+

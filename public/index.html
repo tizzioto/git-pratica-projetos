@@ -17,6 +17,25 @@
 </header>
 
 <main>
+
+<!-- Login de funcionário -->
+<section class="panel">
+    <h2>🔐 Login de funcionário</h2>
+
+    <form id="formLogin">
+        <label>CPF</label>
+        <input type="text" id="cpfLogin" required placeholder="Digite seu CPF">
+
+        <label>Senha</label>
+        <input type="password" id="senhaLogin" required placeholder="Digite sua senha">
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <p class="message" id="mensagemLogin"></p>
+</section>
+<div id="painelBiblioteca" style="display: none;">
+
     <section class="welcome">
     <h2>Painel de Controle</h2>
     <p>Gerencie livros, consultas e empréstimos em um só lugar.</p>
@@ -81,6 +100,36 @@
         <p class="message" id="mensagemLeitor"></p>
     </div>
 
+<!-- Cadastro de funcionário -->
+<div class="panel">
+    <h2>👨‍💼 Cadastrar funcionário</h2>
+
+    <form id="formFuncionario">
+        <label>Nome completo</label>
+        <input type="text" id="nomeFuncionario" required>
+
+        <label>CPF</label>
+        <input type="text" id="cpfFuncionario" required>
+
+        <label>E-mail</label>
+        <input type="email" id="emailFuncionario" required>
+
+        <label>Telefone</label>
+        <input type="text" id="telefoneFuncionario" required>
+
+        <label>Cargo</label>
+        <input type="text" id="cargoFuncionario" required>
+
+        <label>Senha</label>
+        <input type="password" id="senhaFuncionario" required>
+
+        <button type="submit">Cadastrar funcionário</button>
+    </form>
+
+    <p class="message" id="mensagemFuncionario"></p>
+</div>
+
+
     <!-- Registro de empréstimo -->
     <div class="panel">
         <h2>📖 Registrar empréstimo</h2>
@@ -132,6 +181,7 @@
             <p>Carregando livros...</p>
         </div>
     </section>
+</div>
 
 </main>
 

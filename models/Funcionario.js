@@ -1,5 +1,6 @@
 
 import Pessoa from './Pessoa.js';
+import bcrypt from 'bcryptjs';
 
 export default class Funcionario extends Pessoa {
   constructor(nome, cpf, email, telefone, cargo, senha) {
@@ -9,7 +10,7 @@ export default class Funcionario extends Pessoa {
     this.senha = senha;
   }
 
-  autenticar(senhaInformada) {
-    return this.senha === senhaInformada;
+  async autenticar(senhaInformada) {
+    return await bcrypt.compare(senhaInformada, this.senha);
   }
 }

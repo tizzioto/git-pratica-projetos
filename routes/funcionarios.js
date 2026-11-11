@@ -2,11 +2,12 @@
 import express from 'express';
 import { funcionarios } from '../data/store.js';
 import Funcionario from '../models/Funcionario.js';
+import bcrypt from 'bcryptjs';
 
 const router = express.Router();
 
 // Cadastrar funcionário
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { nome, cpf, email, telefone, cargo, senha } = req.body;
 
   if (!nome || !cpf || !email || !telefone || !cargo || !senha) {
@@ -25,21 +26,24 @@ router.post('/', (req, res) => {
     });
   }
 
+  const senhaHash = await bcrypt.hash(senha, 10);
   const funcionario = new Funcionario(
     nome,
     cpf,
     email,
     telefone,
     cargo,
-    senha
+    senhaHash
   );
 
   funcionario.id = funcionarios.length + 1;
   funcionarios.push(funcionario);
 
+  const { senha: senhaOculta, ...funcionarioSemSenha } = funcionario;
+
   res.status(201).json({
     mensagem: 'Funcionário cadastrado com sucesso!',
-    funcionario
+    funcionario: funcionarioSemSenha
   });
 });
 
