@@ -1,9 +1,10 @@
 import express from 'express';
-import { funcionarios } from '../data/store.js';
+import { randomUUID } from 'node:crypto';
+import { funcionarios, sessoes } from '../data/store.js';
 
 const router = express.Router();
 
-// Realizar login
+// Realizar login de funcionário
 router.post('/login', async (req, res) => {
   const { cpf, senha } = req.body;
 
@@ -23,11 +24,25 @@ router.post('/login', async (req, res) => {
     });
   }
 
+  const token = randomUUID();
+
+  const perfil = funcionario.cargo.toLowerCase() === 'administrador'
+    ? 'administrador'
+    : 'bibliotecaria';
+
+  sessoes.set(token, {
+    cpf: funcionario.cpf,
+    perfil,
+    ultimaAtividade: Date.now()
+  });
+
   const { senha: senhaOculta, ...funcionarioSemSenha } = funcionario;
 
   res.status(200).json({
     mensagem: 'Login realizado com sucesso!',
-    funcionario: funcionarioSemSenha
+    funcionario: funcionarioSemSenha,
+    perfil,
+    token
   });
 });
 
