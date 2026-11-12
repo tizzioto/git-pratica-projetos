@@ -98,9 +98,13 @@ router.get('/', (req, res) => {
     return res.json(livrosComDisponibilidade);
   }
 
+  const termo = busca.toLowerCase();
+
   const resultado = livrosComDisponibilidade.filter(livro =>
-    livro.titulo.toLowerCase().includes(busca.toLowerCase()) ||
-    livro.autor.toLowerCase().includes(busca.toLowerCase())
+    livro.titulo.toLowerCase().includes(termo) ||
+    livro.autor.toLowerCase().includes(termo) ||
+    String(livro.isbn || '').toLowerCase().includes(termo) ||
+    String(livro.categoria || '').toLowerCase().includes(termo)
   );
 
   res.json(resultado);
