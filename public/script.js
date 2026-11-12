@@ -355,8 +355,6 @@ document.getElementById('formFuncionario').addEventListener('submit', async (e) 
 });
 
 // LOGIN DE FUNCIONÁRIO
-
-// LOGIN DE FUNCIONÁRIO
 document.getElementById('formLogin').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -379,8 +377,43 @@ document.getElementById('formLogin').addEventListener('submit', async (e) => {
 if (resposta.ok) {
     tokenFuncionario = resultado.token;
 
-            document.getElementById('painelBiblioteca').style.display = 'block';
-        }
+    const perfil = resultado.perfil;
+    const ehAdministrador = perfil === 'administrador';
+
+    document.getElementById('formFuncionario')
+        .closest('.panel').style.display =
+        ehAdministrador ? 'block' : 'none';
+
+    document.getElementById('formLivro')
+        .closest('.panel').style.display =
+        ehAdministrador ? 'none' : 'block';
+
+    document.getElementById('formLeitor')
+        .closest('.panel').style.display =
+        ehAdministrador ? 'none' : 'block';
+
+    document.getElementById('formEmprestimo')
+        .closest('.panel').style.display =
+        ehAdministrador ? 'none' : 'block';
+
+    document.getElementById('listaEmprestimos')
+        .closest('.panel').style.display =
+        ehAdministrador ? 'none' : 'block';
+
+    document.getElementById('listaAtrasados')
+        .closest('.panel').style.display =
+        ehAdministrador ? 'none' : 'block';
+
+    document.getElementById('formLogin')
+        .closest('section').style.display = 'none';
+
+    document.getElementById('painelBiblioteca').style.display = 'block';
+
+    if (!ehAdministrador) {
+        carregarEmprestimos();
+        carregarAtrasados();
+    }
+}
 
     } catch (erro) {
         document.getElementById('mensagemLogin').textContent =
