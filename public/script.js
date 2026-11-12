@@ -1,4 +1,13 @@
+    // Token de autenticação do funcionário
+let tokenFuncionario = null;
 
+// Cabeçalhos para requisições autenticadas
+function cabecalhosAutenticados() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenFuncionario}`
+    };
+}
     const listaLivros = document.getElementById('listaLivros');
     const busca = document.getElementById('busca');
 
@@ -24,7 +33,9 @@ async function carregarEmprestimos() {
     const lista = document.getElementById('listaEmprestimos');
 
     try {
-        const resposta = await fetch('/emprestimos');
+        const resposta = await fetch('/emprestimos', {
+    headers: cabecalhosAutenticados()
+});
         const emprestimos = await resposta.json();
 
         lista.innerHTML = '';
@@ -82,7 +93,10 @@ async function carregarEmprestimos() {
                     try {
                         const resposta = await fetch(
                             `/devolucoes/${emprestimo.id}`,
-                            { method: 'POST' }
+                            {
+                                method: 'POST',
+                                headers: cabecalhosAutenticados()
+                            }
                         );
 
                         const resultado = await resposta.json();
@@ -119,7 +133,9 @@ async function carregarAtrasados() {
     const lista = document.getElementById('listaAtrasados');
 
     try {
-        const resposta = await fetch('/emprestimos/atrasados');
+        const resposta = await fetch('/emprestimos/atrasados', {
+    headers: cabecalhosAutenticados()
+});
         const emprestimos = await resposta.json();
 
         lista.innerHTML = '';
@@ -206,7 +222,7 @@ function renderizarLivros(livros) {
             try {
                 const resposta = await fetch(`/livros/${livro.id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: cabecalhosAutenticados(),
                     body: JSON.stringify({
                         titulo: novoTitulo.trim(),
                         autor: novoAutor.trim()
@@ -238,7 +254,7 @@ function renderizarLivros(livros) {
 
         const resposta = await fetch('/livros', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: cabecalhosAutenticados(),
             body: JSON.stringify({ titulo, autor })
         });
 
@@ -264,7 +280,7 @@ function renderizarLivros(livros) {
 
         const resposta = await fetch('/leitores', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: cabecalhosAutenticados(),
             body: JSON.stringify({ nome, cpf, email, telefone })
         });
 
@@ -285,7 +301,7 @@ function renderizarLivros(livros) {
         const leitorCpf = document.getElementById('leitorCpf').value;
         const resposta = await fetch('/emprestimos', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: cabecalhosAutenticados(),
             body: JSON.stringify({ livroId, leitorCpf })
         });
 
@@ -311,9 +327,6 @@ function renderizarLivros(livros) {
     });
 
     carregarLivros();
-    carregarEmprestimos();
-    carregarAtrasados();
-
     // CADASTRO DE FUNCIONÁRIO
 document.getElementById('formFuncionario').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -327,7 +340,7 @@ document.getElementById('formFuncionario').addEventListener('submit', async (e) 
 
     const resposta = await fetch('/funcionarios', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: cabecalhosAutenticados(),
         body: JSON.stringify({ nome, cpf, email, telefone, cargo, senha })
     });
 
@@ -362,9 +375,9 @@ document.getElementById('formLogin').addEventListener('submit', async (e) => {
         document.getElementById('mensagemLogin').textContent =
             resultado.mensagem;
 
-        if (resposta.ok) {
-            document.getElementById('formLogin')
-                .closest('section').style.display = 'none';
+                
+if (resposta.ok) {
+    tokenFuncionario = resultado.token;
 
             document.getElementById('painelBiblioteca').style.display = 'block';
         }
