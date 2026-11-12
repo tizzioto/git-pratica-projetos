@@ -63,15 +63,32 @@
     <div class="panel">
         <h2>➕ Cadastrar livro</h2>
 
-        <form id="formLivro">
-            <label>Título do livro</label>
-            <input type="text" id="titulo" required placeholder="Digite o título">
+        
+<form id="formLivro">
+    <label>Título do livro</label>
+    <input type="text" id="titulo" required placeholder="Digite o título">
 
-            <label>Autor</label>
-            <input type="text" id="autor" required placeholder="Digite o autor">
+    <label>Autor</label>
+    <input type="text" id="autor" required placeholder="Digite o autor">
 
-            <button type="submit">Cadastrar livro</button>
-        </form>
+    <label>ISBN</label>
+    <input type="text" id="isbn" required placeholder="Digite o ISBN">
+
+    <label>Editora</label>
+    <input type="text" id="editora" required placeholder="Digite a editora">
+
+    <label>Ano de publicação</label>
+    <input type="number" id="anoPublicacao" required placeholder="Digite o ano">
+
+    <label>Categoria</label>
+    <input type="text" id="categoria" required placeholder="Digite a categoria">
+
+    <label>Quantidade disponível</label>
+    <input type="number" id="quantidadeDisponivel" required min="0" value="1">
+
+    <button type="submit">Cadastrar livro</button>
+</form>
+
 
         <p class="message" id="mensagemLivro"></p>
     </div>
