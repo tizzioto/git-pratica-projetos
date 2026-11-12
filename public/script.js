@@ -1,5 +1,5 @@
-    // Token de autenticação do funcionário
-let tokenFuncionario = null;
+let tokenFuncionario = localStorage.getItem('tokenFuncionario');
+let perfilFuncionario = localStorage.getItem('perfilFuncionario');
 
 // Cabeçalhos para requisições autenticadas
 function cabecalhosAutenticados() {
@@ -61,14 +61,30 @@ async function carregarEmprestimos() {
             ).toLocaleDateString('pt-BR');
 
             data.textContent = 'Data do empréstimo: ' + dataFormatada;
+            const previsao = document.createElement('p');
+
+            const previsaoFormatada = new Date(
+                emprestimo.dataPrevistaDevolucao
+            ).toLocaleDateString('pt-BR');
+
+            previsao.textContent = 'Devolução prevista: ' + previsaoFormatada;
 
             const status = document.createElement('span');
             status.className = 'status ' +
                 (emprestimo.status === 'Ativo' ? 'unavailable' : 'available');
             status.textContent = emprestimo.status;
 
-            card.append(titulo, leitor, data, status);
+            card.append(titulo, leitor, data, previsao);
+            if (emprestimo.status === 'Devolvido' && emprestimo.dataDevolucao) {
+                const devolucao = document.createElement('p');
 
+                devolucao.textContent = 'Data da devolução: ' +
+                    new Date(emprestimo.dataDevolucao).toLocaleDateString('pt-BR');
+
+                card.appendChild(devolucao);
+            }
+            // Status por último
+            card.appendChild(status);
             // Exibir multa após a devolução
             if (emprestimo.status === 'Devolvido' && emprestimo.multa) {
                 const multa = document.createElement('p');
@@ -202,73 +218,113 @@ function renderizarLivros(livros) {
             ? 'Disponível'
             : 'Emprestado';
 
-        const botaoEditar = document.createElement('button');
-        botaoEditar.textContent = 'Editar';
+        
+const botaoEditar = document.createElement('button');
+botaoEditar.textContent = 'Editar';
 
-        botaoEditar.addEventListener('click', async () => {
-            const novoTitulo = prompt('Novo título:', livro.titulo);
+botaoEditar.addEventListener('click', async () => {
+    const novoTitulo = prompt('Novo título:', livro.titulo);
+    if (novoTitulo === null) return;
 
-            if (novoTitulo === null) return;
+    const novoAutor = prompt('Novo autor:', livro.autor);
+    if (novoAutor === null) return;
 
-            const novoAutor = prompt('Novo autor:', livro.autor);
+    const novoIsbn = prompt('Novo ISBN:', livro.isbn);
+    if (novoIsbn === null) return;
 
-            if (novoAutor === null) return;
+    const novaEditora = prompt('Nova editora:', livro.editora);
+    if (novaEditora === null) return;
 
-            if (!novoTitulo.trim() || !novoAutor.trim()) {
-                alert('Título e autor são obrigatórios.');
-                return;
-            }
+    const novoAno = prompt('Novo ano de publicação:', livro.anoPublicacao);
+    if (novoAno === null) return;
 
-            try {
-                const resposta = await fetch(`/livros/${livro.id}`, {
-                    method: 'PUT',
-                    headers: cabecalhosAutenticados(),
-                    body: JSON.stringify({
-                        titulo: novoTitulo.trim(),
-                        autor: novoAutor.trim()
-                    })
-                });
+    const novaCategoria = prompt('Nova categoria:', livro.categoria);
+    if (novaCategoria === null) return;
 
-                const resultado = await resposta.json();
-                alert(resultado.mensagem);
+    const novaQuantidade = prompt(
+        'Nova quantidade disponível:',
+        livro.quantidadeDisponivel
+    );
+    if (novaQuantidade === null) return;
 
-                if (resposta.ok) {
-                    carregarLivros();
-                }
-            } catch (erro) {
-                alert('Erro ao atualizar o livro.');
-            }
+    if (!novoTitulo.trim() || !novoAutor.trim()) {
+        alert('Título e autor são obrigatórios.');
+        return;
+    }
+
+    try {
+        const resposta = await fetch(`/livros/${livro.id}`, {
+            method: 'PUT',
+            headers: cabecalhosAutenticados(),
+            body: JSON.stringify({
+                titulo: novoTitulo.trim(),
+                autor: novoAutor.trim(),
+                isbn: novoIsbn.trim(),
+                editora: novaEditora.trim(),
+                anoPublicacao: Number(novoAno),
+                categoria: novaCategoria.trim(),
+                quantidadeDisponivel: Number(novaQuantidade)
+            })
         });
 
-        card.append(titulo, autor, id, status, botaoEditar);
-        listaLivros.appendChild(card);
-    });
+        const resultado = await resposta.json();
+        alert(resultado.mensagem);
+
+        if (resposta.ok) {
+            carregarLivros();
+        }
+    } catch (erro) {
+        alert('Erro ao atualizar o livro.');
+    }
+});
+
+card.append(titulo, autor, id, status);
+
+if (perfilFuncionario === 'bibliotecaria') {
+    card.appendChild(botaoEditar);
 }
+listaLivros.appendChild(card);
+
+    });
+}       
 
 
+    
     document.getElementById('formLivro').addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const titulo = document.getElementById('titulo').value;
         const autor = document.getElementById('autor').value;
+        const isbn = document.getElementById('isbn').value;
+        const editora = document.getElementById('editora').value;
+        const anoPublicacao = Number(document.getElementById('anoPublicacao').value);
+        const categoria = document.getElementById('categoria').value;
+        const quantidadeDisponivel = Number(document.getElementById('quantidadeDisponivel').value);
 
         const resposta = await fetch('/livros', {
             method: 'POST',
             headers: cabecalhosAutenticados(),
-            body: JSON.stringify({ titulo, autor })
+            body: JSON.stringify({
+                titulo,
+                autor,
+                isbn,
+                editora,
+                anoPublicacao,
+                categoria,
+                quantidadeDisponivel
+            })
         });
 
-        const resultado = await resposta.json();
+    const resultado = await resposta.json();
 
-        document.getElementById('mensagemLivro').textContent =
-            resultado.mensagem;
+    alert(resultado.mensagem);
 
-        if (resposta.ok) {
-            e.target.reset();
-            carregarLivros();
-            carregarEmprestimos();
-        }
-    });
+    if (resposta.ok) {
+        document.getElementById('formLivro').reset();
+        carregarLivros();
+    }
+});
+
         // CADASTRO DE LEITOR 
     document.getElementById('formLeitor').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -277,6 +333,8 @@ function renderizarLivros(livros) {
         const cpf = document.getElementById('cpfLeitor').value;
         const email = document.getElementById('emailLeitor').value;
         const telefone = document.getElementById('telefoneLeitor').value;
+
+        console.log({ nome, cpf, email, telefone });
 
         const resposta = await fetch('/leitores', {
             method: 'POST',
@@ -354,31 +412,9 @@ document.getElementById('formFuncionario').addEventListener('submit', async (e) 
     }
 });
 
-// LOGIN DE FUNCIONÁRIO
-document.getElementById('formLogin').addEventListener('submit', async (e) => {
-    e.preventDefault();
 
-    const cpf = document.getElementById('cpfLogin').value;
-    const senha = document.getElementById('senhaLogin').value;
-
-    try {
-        const resposta = await fetch('/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cpf, senha })
-        });
-
-        const resultado = await resposta.json();
-
-        document.getElementById('mensagemLogin').textContent =
-            resultado.mensagem;
-
-                
-if (resposta.ok) {
-    tokenFuncionario = resultado.token;
-
-    const perfil = resultado.perfil;
-    const ehAdministrador = perfil === 'administrador';
+function aplicarAcessoFuncionario() {
+    const ehAdministrador = perfilFuncionario === 'administrador';
 
     document.getElementById('formFuncionario')
         .closest('.panel').style.display =
@@ -409,15 +445,49 @@ if (resposta.ok) {
 
     document.getElementById('painelBiblioteca').style.display = 'block';
 
+    carregarLivros();
+
     if (!ehAdministrador) {
         carregarEmprestimos();
         carregarAtrasados();
     }
 }
 
+// LOGIN DE FUNCIONÁRIO
+document.getElementById('formLogin').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const cpf = document.getElementById('cpfLogin').value;
+    const senha = document.getElementById('senhaLogin').value;
+
+    try {
+        const resposta = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cpf, senha })
+        });
+
+        const resultado = await resposta.json();
+
+        document.getElementById('mensagemLogin').textContent =
+            resultado.mensagem;
+
+                
+if (resposta.ok) {
+    tokenFuncionario = resultado.token;
+    perfilFuncionario = resultado.perfil;
+
+    localStorage.setItem('tokenFuncionario', tokenFuncionario);
+    localStorage.setItem('perfilFuncionario', perfilFuncionario);
+
+    aplicarAcessoFuncionario();
+}
     } catch (erro) {
         document.getElementById('mensagemLogin').textContent =
             'Erro ao realizar login.';
     }
 });
-
+// RESTAURAR SESSÃO AO ATUALIZAR A PÁGINA
+if (tokenFuncionario && perfilFuncionario) {
+    aplicarAcessoFuncionario();
+}
