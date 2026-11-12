@@ -1,11 +1,12 @@
 import express from 'express';
 import Emprestimo from '../models/Emprestimo.js';
 import { livros, leitores, emprestimos } from '../data/store.js';
+import { autenticar, autorizar } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Registrar empréstimo
-router.post('/', (req, res) => {
+router.post('/', autenticar, autorizar('bibliotecaria'), (req, res) => {
   const { livroId, leitorCpf } = req.body;
 
   const livro = livros.find(l => l.id === Number(livroId));
@@ -56,11 +57,11 @@ router.post('/', (req, res) => {
 });
 
 // Consultar todos os empréstimos
-router.get('/', (req, res) => {
+router.get('/', autenticar, autorizar('bibliotecaria'), (req, res) => {
   res.json(emprestimos);
 });
 // Identificar livros em atraso
-router.get('/atrasados', (req, res) => {
+router.get('/atrasados', autenticar, autorizar('bibliotecaria'), (req, res) => {
   const emprestimosAtrasados = emprestimos.filter(
     emprestimo => emprestimo.estaAtrasado()
   );

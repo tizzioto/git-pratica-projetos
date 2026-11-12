@@ -2,11 +2,12 @@
 import express from 'express';
 import { livros, emprestimos } from '../data/store.js';
 import Multa from '../models/Multa.js';
+import { autenticar, autorizar } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Registrar devolução
-router.post('/:emprestimoId', (req, res) => {
+router.post('/:emprestimoId', autenticar, autorizar('bibliotecaria'), (req, res) => {
   const emprestimoId = Number(req.params.emprestimoId);
 
   const emprestimo = emprestimos.find(

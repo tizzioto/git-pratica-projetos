@@ -1,12 +1,12 @@
-
 import express from 'express';
 import Livro from '../models/Livro.js';
 import { livros } from '../data/store.js';
+import { autenticar, autorizar } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Cadastrar livro
-router.post('/', (req, res) => {
+router.post('/', autenticar, autorizar('bibliotecaria'), async (req, res) => {
   const {
     titulo,
     autor,
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
 });
 
 // Atualizar dados de um livro
-router.put('/:id', (req, res) => {
+router.put('/:id', autenticar, autorizar('bibliotecaria'), async (req, res) => {
   const livroId = Number(req.params.id);
 
   const livro = livros.find(l => l.id === livroId);

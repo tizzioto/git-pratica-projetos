@@ -1,15 +1,17 @@
 
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import Leitor from '../models/Leitor.js';
 import { leitores } from '../data/store.js';
+import { autenticar, autorizar } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Cadastrar leitor
-router.post('/', (req, res) => {
-  const { nome, cpf, email, telefone } = req.body;
+router.post('/', autenticar, autorizar('bibliotecaria'), async (req, res) => {
+  const { nome, cpf, email, telefone, senha } = req.body;
 
-  if (!nome || !cpf || !email || !telefone) {
+  if (!nome || !cpf || !email || !telefone || !senha) {
     return res.status(400).json({
       mensagem: 'Todos os campos são obrigatórios.'
     });
@@ -25,14 +27,24 @@ router.post('/', (req, res) => {
     });
   }
 
-  const novoLeitor = new Leitor(nome, cpf, email, telefone);
+  const senhaHash = await bcrypt.hash(senha, 10);
+
+  const novoLeitor = new Leitor(
+    nome,
+    cpf,
+    email,
+    telefone,
+    senhaHash
+  );
 
   novoLeitor.id = leitores.length + 1;
   leitores.push(novoLeitor);
 
+  const { senha: senhaOculta, ...leitorSemSenha } = novoLeitor;
+
   res.status(201).json({
     mensagem: 'Leitor cadastrado com sucesso!',
-    leitor: novoLeitor
+    leitor: leitorSemSenha
   });
 });
 
