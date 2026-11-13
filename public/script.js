@@ -223,60 +223,18 @@ function renderizarLivros(livros) {
 const botaoEditar = document.createElement('button');
 botaoEditar.textContent = 'Editar';
 
-botaoEditar.addEventListener('click', async () => {
-    const novoTitulo = prompt('Novo título:', livro.titulo);
-    if (novoTitulo === null) return;
+botaoEditar.addEventListener('click', () => {
+    document.getElementById('editarTitulo').value = livro.titulo;
+    document.getElementById('editarAutor').value = livro.autor;
+    document.getElementById('editarIsbn').value = livro.isbn || '';
+    document.getElementById('editarEditora').value = livro.editora || '';
+    document.getElementById('editarAno').value = livro.anoPublicacao || '';
+    document.getElementById('editarCategoria').value = livro.categoria || '';
+    document.getElementById('editarQuantidade').value = livro.quantidadeDisponivel;
 
-    const novoAutor = prompt('Novo autor:', livro.autor);
-    if (novoAutor === null) return;
+    document.getElementById('modalEditarLivro').style.display = 'flex';
 
-    const novoIsbn = prompt('Novo ISBN:', livro.isbn);
-    if (novoIsbn === null) return;
-
-    const novaEditora = prompt('Nova editora:', livro.editora);
-    if (novaEditora === null) return;
-
-    const novoAno = prompt('Novo ano de publicação:', livro.anoPublicacao);
-    if (novoAno === null) return;
-
-    const novaCategoria = prompt('Nova categoria:', livro.categoria);
-    if (novaCategoria === null) return;
-
-    const novaQuantidade = prompt(
-        'Nova quantidade disponível:',
-        livro.quantidadeDisponivel
-    );
-    if (novaQuantidade === null) return;
-
-    if (!novoTitulo.trim() || !novoAutor.trim()) {
-        alert('Título e autor são obrigatórios.');
-        return;
-    }
-
-    try {
-        const resposta = await fetch(`/livros/${livro.id}`, {
-            method: 'PUT',
-            headers: cabecalhosAutenticados(),
-            body: JSON.stringify({
-                titulo: novoTitulo.trim(),
-                autor: novoAutor.trim(),
-                isbn: novoIsbn.trim(),
-                editora: novaEditora.trim(),
-                anoPublicacao: Number(novoAno),
-                categoria: novaCategoria.trim(),
-                quantidadeDisponivel: Number(novaQuantidade)
-            })
-        });
-
-        const resultado = await resposta.json();
-        alert(resultado.mensagem);
-
-        if (resposta.ok) {
-            carregarLivros();
-        }
-    } catch (erro) {
-        alert('Erro ao atualizar o livro.');
-    }
+    document.getElementById('formEditarLivro').dataset.livroId = livro.id;
 });
 
 card.append(titulo, autor, id, status);
@@ -289,8 +247,50 @@ listaLivros.appendChild(card);
     });
 }       
 
+// Salvar alterações do livro
+document.getElementById('formEditarLivro').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    
+    const livroId = e.target.dataset.livroId;
+
+    const dadosLivro = {
+        titulo: document.getElementById('editarTitulo').value.trim(),
+        autor: document.getElementById('editarAutor').value.trim(),
+        isbn: document.getElementById('editarIsbn').value.trim(),
+        editora: document.getElementById('editarEditora').value.trim(),
+        anoPublicacao: Number(document.getElementById('editarAno').value),
+        categoria: document.getElementById('editarCategoria').value.trim(),
+        quantidadeDisponivel: Number(document.getElementById('editarQuantidade').value)
+    };
+
+    try {
+        const resposta = await fetch(`/livros/${livroId}`, {
+            method: 'PUT',
+            headers: cabecalhosAutenticados(),
+            body: JSON.stringify(dadosLivro)
+        });
+
+        const resultado = await resposta.json();
+
+        if (resposta.ok) {
+            document.getElementById('modalEditarLivro').style.display = 'none';
+            e.target.reset();
+            carregarLivros();
+            alert('Livro atualizado com sucesso!');
+        } else {
+            alert(resultado.mensagem);
+        }
+    } catch (erro) {
+        alert('Erro ao atualizar o livro.');
+    }
+});
+
+// Cancelar edição
+document.getElementById('cancelarEdicao').addEventListener('click', () => {
+    document.getElementById('modalEditarLivro').style.display = 'none';
+    document.getElementById('formEditarLivro').reset();
+});
+
     document.getElementById('formLivro').addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -318,11 +318,12 @@ listaLivros.appendChild(card);
 
     const resultado = await resposta.json();
 
-    alert(resultado.mensagem);
-
     if (resposta.ok) {
+        alert('Livro cadastrado com sucesso!');
         document.getElementById('formLivro').reset();
         carregarLivros();
+    } else {
+        alert(resultado.mensagem);
     }
 });
 
@@ -492,3 +493,13 @@ if (resposta.ok) {
 if (tokenFuncionario && perfilFuncionario) {
     aplicarAcessoFuncionario();
 }
+// Encerrar sessão e voltar para o login
+document.getElementById('botaoSair').addEventListener('click', () => {
+    localStorage.removeItem('tokenFuncionario');
+    localStorage.removeItem('perfilFuncionario');
+
+    tokenFuncionario = null;
+    perfilFuncionario = null;
+
+    location.reload();
+});
