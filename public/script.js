@@ -127,6 +127,7 @@ async function carregarEmprestimos() {
                         alert(resultado.mensagem);
                         carregarEmprestimos();
                         carregarLivros();
+                        carregarAtrasados();
 
                     } catch (erro) {
                         alert('Erro ao registrar devolução.');
