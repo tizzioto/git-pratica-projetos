@@ -38,6 +38,8 @@
     <section class="welcome">
     <h2>Painel de Controle</h2>
     <p>Gerencie livros, consultas e empréstimos em um só lugar.</p>
+
+    <button type="button" id="botaoSair">Sair</button>
 </section>
 
 <section class="stats">
@@ -200,6 +202,28 @@
     </section>
 
 </main>
+
+<!-- Janela de edição de livro -->
+<div id="modalEditarLivro" class="modal">
+    <div class="modal-conteudo">
+        <h2>Editar livro</h2>
+
+        <form id="formEditarLivro">
+            <input type="text" id="editarTitulo" placeholder="Título" required>
+            <input type="text" id="editarAutor" placeholder="Autor" required>
+            <input type="text" id="editarIsbn" placeholder="ISBN">
+            <input type="text" id="editarEditora" placeholder="Editora">
+            <input type="number" id="editarAno" placeholder="Ano de publicação">
+            <input type="text" id="editarCategoria" placeholder="Categoria">
+            <input type="number" id="editarQuantidade" placeholder="Quantidade disponível" min="0" required>
+            <p id="mensagemEdicao"></p>
+            <div class="modal-botoes">
+                <button type="submit">Salvar alterações</button>
+                <button type="button" id="cancelarEdicao">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script src="script.js"></script>
 
