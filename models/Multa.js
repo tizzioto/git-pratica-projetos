@@ -21,7 +21,6 @@ export default class Multa {
 
     const diferenca = devolucao - prevista;
     const dias = diferenca / (1000 * 60 * 60 * 24);
-
-    return Math.max(0, dias);
+    return Math.max(0, Math.floor(dias));
   }
 }
