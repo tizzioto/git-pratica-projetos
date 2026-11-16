@@ -1,22 +1,48 @@
 # 📚 Sistema de Gerenciamento de Biblioteca
 
+## Integrantes
+
+- Lucas Barbeiro Tizzioto
+- Pedro Otávio Santos de Almeida
+
 ## Sobre o projeto
 
-O Sistema de Gerenciamento de Biblioteca é uma aplicação web desenvolvida como projeto acadêmico, com o objetivo de facilitar o gerenciamento de livros, leitores e empréstimos de uma biblioteca.
+O Sistema de Gerenciamento de Biblioteca é uma aplicação web desenvolvida como projeto acadêmico, com o objetivo de facilitar o gerenciamento de livros, leitores, funcionários e empréstimos de uma biblioteca.
 
-O projeto utiliza JavaScript, Node.js e Express, aplicando conceitos de programação orientada a objetos, organização de código em módulos e desenvolvimento de aplicações web.
+O projeto utiliza JavaScript, Node.js e Express, aplicando conceitos de programação orientada a objetos, organização de código em módulos, desenvolvimento de aplicações web, autenticação e controle de acesso.
 
 ## Funcionalidades implementadas
 
-- Cadastro de livros com título, autor e outras informações.
+- Cadastro de leitores.
+- Cadastro de funcionários.
+- Cadastro de livros.
 - Consulta e pesquisa de livros por título ou autor.
 - Identificação da disponibilidade dos livros.
 - Controle da quantidade de exemplares disponíveis.
+- Edição dos dados dos livros.
 - Registro de empréstimos.
+- Controle do prazo de empréstimo.
 - Consulta do histórico de empréstimos.
 - Registro de devoluções.
-- Atualização automática da disponibilidade dos livros.
-- Identificação do status dos empréstimos (ativo ou devolvido).
+- Atualização automática da disponibilidade dos livros após devolução.
+- Identificação de empréstimos ativos e devolvidos.
+- Identificação de livros em atraso.
+- Cálculo de multas por atraso.
+- Autenticação de usuários.
+- Controle de acesso de acordo com o perfil do usuário.
+- Logout do sistema.
+
+## Regras de negócio implementadas
+
+- Cada leitor pode possuir no máximo 3 empréstimos simultâneos.
+- O prazo padrão de empréstimo é de 14 dias corridos.
+- Livros indisponíveis não podem ser emprestados.
+- A devolução atualiza a quantidade disponível do livro.
+- A multa é calculada considerando os dias completos de atraso.
+- O valor da multa é de R$ 1,00 por dia de atraso para cada livro.
+- Operações restritas exigem autenticação e autorização.
+- O perfil de Administrador possui permissões administrativas, incluindo o cadastro de funcionários.
+- O perfil de Bibliotecária realiza operações relacionadas a leitores, livros, empréstimos e devoluções.
 
 ## Tecnologias utilizadas
 
@@ -47,6 +73,8 @@ As classes desenvolvidas são:
 
 ```text
 git-pratica-projetos/
+├── data/
+├── middleware/
 ├── models/
 │   ├── Administrador.js
 │   ├── Bibliotecaria.js
@@ -57,60 +85,12 @@ git-pratica-projetos/
 │   ├── Multa.js
 │   └── Pessoa.js
 ├── public/
-│   └── index.html
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
+├── routes/
 ├── index.js
 ├── server.js
 ├── package.json
 ├── package-lock.json
 └── README.md
-```
-
-## Requisitos para execução
-
-Antes de executar o projeto, é necessário ter instalado:
-
-- [Node.js](https://nodejs.org/)
-- npm (instalado junto com o Node.js).
-- [Git](https://git-scm.com/) (opcional, para clonar o repositório).
-
-## Como executar o projeto
-
-**1. Clone o repositório:**
-
-```bash
-git clone https://github.com/tizzioto/git-pratica-projetos.git
-```
-
-**2. Acesse a pasta do projeto:**
-
-```bash
-cd git-pratica-projetos
-```
-
-**3. Instale as dependências:**
-
-```bash
-npm install
-```
-
-**4. Inicie o servidor:**
-
-```bash
-npm start
-```
-
-**5. Acesse a aplicação pelo navegador:**
-
-```text
-http://localhost:3000
-```
-
-## Observações
-
-Atualmente, os dados de livros e empréstimos são armazenados temporariamente em memória, por meio de estruturas de dados no servidor. Portanto, as informações são perdidas quando o servidor é encerrado ou reiniciado.
-
-O projeto está em desenvolvimento e poderá receber novas funcionalidades e melhorias ao longo de sua implementação.
-
-## Objetivo acadêmico
-
-Projeto desenvolvido para fins acadêmicos, com o propósito de aplicar conhecimentos de desenvolvimento web, JavaScript, Node.js, Express, programação orientada a objetos e controle de versão utilizando Git e GitHub.
