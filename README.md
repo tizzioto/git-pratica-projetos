@@ -36,8 +36,8 @@ O projeto foi desenvolvido como atividade acadêmica da disciplina de Análise e
 - **CSS3** — estilização da interface.
 - **Git** — controle de versão do projeto.
 - **GitHub** — armazenamento e gerenciamento do repositório.
-- **bcrypt** — utilizado para hash das senhas.
-- **UUID** — utilizado na geração de identificadores únicos.
+- **bcryptjs** — utilizado para hash das senhas.
+- **crypto (randomUUID)** — módulo nativo do Node.js, utilizado para gerar os tokens de sessão.
 - **dotenv** — utilizado para gerenciamento de variáveis de ambiente.
 
 ## Estrutura do projeto
@@ -49,7 +49,8 @@ git-pratica-projetos/
 ├── middleware/
 ├── public/
 ├── data/
-├── .env
+├── .env              (não versionado; veja .env.example)
+├── .env.example
 ├── index.js
 ├── server.js
 ├── package.json
@@ -83,6 +84,12 @@ Instale as dependências:
 npm install
 ```
 
+Crie o arquivo `.env` a partir do exemplo e preencha os dados do primeiro administrador:
+
+```bash
+cp .env.example .env
+```
+
 Inicie a aplicação:
 
 ```bash
@@ -93,3 +100,12 @@ Após iniciar o servidor, acesse no navegador:
 
 ```text
 http://localhost:3000
+```
+
+## Primeiro acesso
+
+Ao iniciar o servidor sem nenhum funcionário cadastrado, o sistema cria o primeiro administrador com os dados do `.env` (`ADMIN_NOME`, `ADMIN_CPF`, `ADMIN_EMAIL`, `ADMIN_TELEFONE` e `ADMIN_SENHA`). Entre com o CPF e a senha informados; o administrador cadastra as bibliotecárias, que realizam as demais operações (livros, leitores, empréstimos e devoluções).
+
+## Limitações
+
+- Os dados são mantidos em memória: ao reiniciar o servidor, livros, leitores, empréstimos e funcionários cadastrados são perdidos (apenas o administrador inicial é recriado).
