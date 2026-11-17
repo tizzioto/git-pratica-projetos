@@ -22,6 +22,18 @@ router.post('/', autenticar, autorizar('bibliotecaria'), async (req, res) => {
       mensagem: 'Título e autor são obrigatórios.'
     });
   }
+  // Verificar se o ISBN já está cadastrado
+if (isbn) {
+  const isbnExistente = livros.some(
+    livro => String(livro.isbn).trim() === String(isbn).trim()
+  );
+
+  if (isbnExistente) {
+    return res.status(409).json({
+      mensagem: 'Já existe um livro cadastrado com este ISBN.'
+    });
+  }
+}
 
   const novoLivro = new Livro(
     titulo,
@@ -69,6 +81,20 @@ router.put('/:id', autenticar, autorizar('bibliotecaria'), async (req, res) => {
       mensagem: 'Título e autor são obrigatórios.'
     });
   }
+  // Verificar se o ISBN já pertence a outro livro
+ if (isbn) {
+   const isbnExistente = livros.some(
+     l => l.id !== livroId &&
+          String(l.isbn).trim() === String(isbn).trim()
+   );
+
+   if (isbnExistente) {
+     return res.status(409).json({
+       mensagem: 'Já existe outro livro cadastrado com este ISBN.'
+     });
+   }
+ }
+  
 
   livro.titulo = titulo;
   livro.autor = autor;
