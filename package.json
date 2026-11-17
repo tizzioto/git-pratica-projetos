@@ -1,7 +1,7 @@
 {
-  "name": "git-pratica",
+  "name": "sgb-biblioteca",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sistema de Gerenciamento de Biblioteca (SGB) em Node.js e Express",
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Lucas Barbeiro Tizzioto e Pedro Otávio Santos de Almeida",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
